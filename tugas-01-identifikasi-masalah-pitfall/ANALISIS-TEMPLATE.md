@@ -73,4 +73,4 @@ Pemisahan service ini mengorbankan kesederhanaan sistem dan meningkatkan komplek
 
 ## Kesimpulan Kelompok
 
-[Ringkasan: jika FoodGo memperbaiki ketiga pitfall ini, apa arsitektur yang disarankan secara garis besar? Kaitkan dengan Tugas 2.]
+Secara garis besar, kegagalan sistem FoodGo disebabkan oleh kombinasi asumsi jaringan yang keliru (Latency is Zero dan The Network is Reliable) serta desain arsitektur monolitik tanpa isolasi (Single Point of Failure). Jika FoodGo memperbaiki ketiga pitfall ini, arsitektur yang disarankan adalah Arsitektur Microservices berbasis Event-Driven (Event-Driven Microservices Architecture)
