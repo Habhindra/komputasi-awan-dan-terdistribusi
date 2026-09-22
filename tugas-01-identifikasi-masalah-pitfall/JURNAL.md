@@ -13,7 +13,8 @@
 - ...
 
 ## Review Silang
-- [Nama] mengomentari analisis [Nama lain]: ...
+- [Habhindra] mengomentari analisis [Ibad]: Solusi yang ditawarkan cuma berdasarkan teori, tapi memang industry standard untuk mengatasi masalah blocking di sistem terdistribusi. trade-off yang dibahas juga menunjukkan bahwa analisis ini memikirkan risiko jangka panjangnya.
+- [Habhindra] mengomentari analisis [Zaky]: Alur dampak dari resource exhaustion hingga lumpuh total layanan  sangat logis. menggambarkan risiko nyata dari sistem yang tidak punya isolasi sumber daya.
 
 ## Log Penggunaan AI (Level 2)
 
