@@ -45,24 +45,23 @@ Jika retry dilakukan secara sembarangan tanpa jeda yang jelas, server tujuan yan
 
  ### **Bukti di skenario:** Single Point Of Failure 
 
-    Di skenario dijelasin kalau pas trafik lagi naik, ada satu server yang kewalahan banget. Hal ini kejadian gara-gara semua modul (mulai dari pesanan, pembayaran, sampai notifikasi kurir) 
-    dijalanin barengan di satu proses monolitik yang sama persis
+    Berdasarkan skenario FoodGo, ditemukan masalah saat terjadi lonjakan trafik di mana satu server menjadi sangat kewalahan karena harus menangani seluruh modul (pesanan, pembayaran, dan notifikasi kurir) yang digabung dalam satu proses monolitik yang sama
 
 ### **Kenapa ini keliru:** 
 
-    Bikin sistem gede tapi semuanya digabung di satu tempat itu rawan banget. Ibaratnya nggak ada isolasi atau sekat antar fitur. Kalau ada satu modul aja yang buggy, makan memori (memory leak), atau di-spam request, modul lain yang sebenernya lagi santai bakal ikutan kena getahnya dan bisa bikin seluruh aplikasi mati total
+    Pendekatan desain ini sangat berisiko untuk sistem berskala besar karena tidak adanya isolasi sumber daya (resource isolation). Jika semua fungsi aplikasi dijalankan dalam satu proses, masalah pada satu fungsi tunggal (misalnya penggunaan memori atau CPU yang berlebih) akan berdampak langsung pada kinerja fungsi-fungsi lainnya, sehingga sistem menjadi rentan tumbang secara keseluruhan
 
 ### **Dampak ke FoodGo:**
 
-   Karena semuanya numpuk di satu proses, pas lagi jam sibuk servernya langsung nyerah nahan beban dari semua modul sekaligus. Buntutnya, server backend mengalami crash total. Kalau satu mati, ya mati semua; user nggak bisa pesen, nggak bisa bayar, dan kurir juga nggak dapet notif.
+   Karena semua operasional menumpuk di satu tempat, beban komputasi yang tinggi dari satu alur kerja menyebabkan server tidak mampu lagi memproses request apa pun. Hal ini memicu crash total pada server backend, yang berarti seluruh layanan (pemesanan, pembayaran, dan sistem kurir) lumpuh total secara bersamaan
 
 ### **Solusi desain awal:**
 
-    Arsitekturnya mending dirombak, dari yang tadinya monolitik dipisah aja (decoupled) jadi Microservices atau dipisah-pisah modulnya. Modul pesanan, pembayaran, dan notifikasi dibikin jalan di service-nya masing-masing. Jadi kalau yang rame cuma fitur pesanan, kita cukup scale up kapasitas server untuk service pesanan aja tanpa harus ngegedein server buat service notifikasi
+    Kami mengusulkan pemisahan arsitektur monolitik tersebut menjadi arsitektur berbasis Microservices atau layanan yang terdistribusi. Modul pesanan, pembayaran, dan notifikasi harus dipisah menjadi service yang berdiri sendiri. Dengan isolasi ini, jika trafik pemesanan sedang tinggi, sistem hanya perlu melakukan scaling up pada service pesanan saja menggunakan Load Balancer, tanpa membebani modul lainnya
 
 ### **Trade-off:**
 
-    Masalahnya, mecah modul jadi service yang beda-beda itu bikin maintenance kode dan data jadi jauh lebih ribet. Kita harus mikirin gimana cara handle transaksi yang terdistribusi. Misalnya, kalau pesanan udah telanjur kecatat di database service pesanan, tapi ternyata service pembayarannya nolak atau gagal, kita harus ngoding logika tambahan (kayak rollback manual) biar datanya nggak berantakan dan tetep sinkron antar modul
+    Pemisahan service ini mengorbankan kesederhanaan sistem dan meningkatkan kompleksitas pengelolaan data. Tim pengembang kini harus merancang mekanisme penanganan transaksi terdistribusi untuk menjaga konsistensi data. Sebagai contoh, sistem memerlukan logika tambahan seperti kompensasi transaksi atau rollback otomatis apabila modul pesanan berhasil memproses pesanan, namun pemanggilan ke modul pembayaran berujung gagal
 ---
 
 ## Kesimpulan Kelompok
