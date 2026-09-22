@@ -1,11 +1,11 @@
 # Tugas 1 — Analisis Pitfall FoodGo
 
-**Kelompok:** [A Day In My Life]
+**Kelompok:** [PaperRex]
 
 | Nama | NIM | Kontribusi |
 |---|---|---|
 | [nama 1] | [nim] | [pitfall/bagian yang dikerjakan] |
-| [nama 2] | [nim] | [pitfall/bagian yang dikerjakan] |
+| [Habhindra Dzaky Alghifary] | [103072400095] | [The Network is Reliable/Pitfall 2] |
 | [Muhammad Zaki Oktaruna] | [103072400001] | [Single Point Of Failure / Pitfall 3] |
 
 ## Pitfall 1: [nama pitfall] — ditulis oleh [nama]
@@ -22,9 +22,22 @@
 
 ---
 
-## Pitfall 2: [nama pitfall] — ditulis oleh [nama]
+## Pitfall 2: [The Network is Reliable] — ditulis oleh [Habhindra Dzaky Alghifary]
 
-(ulangi struktur di atas)
+**Bukti di skenario:** [The Network is Reliable]
+Tim menemukan bahwa kode mereka menulis asumsi seperti # network is always reliable, no need for retry dan tidak ada timeout sama sekali pada pemanggilan antar service (modul pesanan memanggil modul pembayaran dan menunggu tanpa batas waktu).
+
+**Kenapa ini keliru:** 
+Di dunia nyata jaringan tidak pernah 100% stabil.bisa jadi gangguan fisik,packet loss,latensi yang melonjak atau gangguan yang terjadi di router.jadi aplikasi akan lag saat koneksi atau jaringan terputus
+
+**Dampak ke FoodGo:** 
+Saat modul pembayaran mengalami keterlambatan atau gangguan, proses di modul pesanan akan terus menunggu secara blocking tanpa batas waktu. Akibatnya, alokasi thread di server cepat habis, sehingga pesanan baru gagal diproses, aplikasi jadi sangat lambat, dan berujung pada timeout ke seluruh pengguna
+
+**Solusi desain awal:** 
+Mengonfigurasi batas waktu,ditambah dengan retry berpola exponential backoff dan circuit breaker untuk melindungi sistem dari lonjakan beban saat terjadi gangguan
+
+**Trade-off:** 
+Jika retry dilakukan secara sembarangan tanpa jeda yang jelas, server tujuan yang tadinya mau bangkit malah bisa langsung tumbang lagi gara-gara lonjakan permintaan secara bersamaan.
 
 ---
 
