@@ -57,6 +57,7 @@ Kami mengusulkan pemisahan arsitektur monolitik tersebut menjadi arsitektur berb
 
 **Trade-off:**
 Pemisahan service ini mengorbankan kesederhanaan sistem dan meningkatkan kompleksitas pengelolaan data. Tim pengembang kini harus merancang mekanisme penanganan transaksi terdistribusi untuk menjaga konsistensi data. Sebagai contoh, sistem memerlukan logika tambahan seperti kompensasi transaksi atau rollback otomatis apabila modul pesanan berhasil memproses pesanan, namun pemanggilan ke modul pembayaran berujung gagal
+
 ---
 
 ## Kesimpulan Kelompok
