@@ -15,6 +15,8 @@
 ## Review Silang
 - [Habhindra] mengomentari analisis [Ibad]: Solusi yang ditawarkan cuma berdasarkan teori, tapi memang industry standard untuk mengatasi masalah blocking di sistem terdistribusi. trade-off yang dibahas juga menunjukkan bahwa analisis ini memikirkan risiko jangka panjangnya.
 - [Habhindra] mengomentari analisis [Zaky]: Alur dampak dari resource exhaustion hingga lumpuh total layanan  sangat logis. menggambarkan risiko nyata dari sistem yang tidak punya isolasi sumber daya.
+- [Zaki] mengomentari analisis [Habhindra]: sebaiknya bagian trade-off difokuskan pada risiko dari solusi circuit breaker dan backoff itu sendiri (misalnya menambah kompleksitas sistem), bukan malah membahas bahaya retry tanpa jeda yang sebenarnya tidak ia sarankan di poin sebelumnya
+- [Zaki] mengomentari analisis [Ibad]: sudah tidak ada yang bisa direview 
 
 ## Log Penggunaan AI (Level 2)
 
