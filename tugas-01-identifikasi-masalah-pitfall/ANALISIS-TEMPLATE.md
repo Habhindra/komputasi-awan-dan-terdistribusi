@@ -4,21 +4,32 @@
 
 | Nama | NIM | Kontribusi |
 |---|---|---|
-| [nama 1] | [nim] | [pitfall/bagian yang dikerjakan] |
+| [Rizqullah Izzul Ibad Gheaz] | [103072400033] | [Latency is Zero/Pitfall 1] |
 | [Habhindra Dzaky Alghifary] | [103072400095] | [The Network is Reliable/Pitfall 2] |
 | [Muhammad Zaki Oktaruna] | [103072400001] | [Single Point Of Failure / Pitfall 3] |
 
-## Pitfall 1: [nama pitfall] — ditulis oleh [nama]
+## Pitfall 1: [Latency Is Zero] — ditulis oleh [Rizqullah Izzul Ibad Gheaz]
 
-**Bukti di skenario:** [kutip/paraphrase bagian skenario]
+**Bukti di skenario:**
+"Aplikasi jadi sangat lambat, beberapa permintaan timeout."
+"(modul pesanan memanggil modul pembayaran dan menunggu tanpa batas waktu)."
 
-**Kenapa ini keliru:** [penjelasan]
+**Kenapa ini keliru:**
+Mengasumsikan latency is zero yaitu menganggap komunikasi antar layanan berjalan secara instan tanpa penundaan waktu transpor data. Pada nyatanya, pengiriman pesan atau panggilan antar layanan membutuhkan waktu siklus. Ketika sistem menangani beban tinggi, latency jaringan akan membesar. Menunggu respons tanpa batas waktu mengabaikan fakta bahwa latency itu ada dan bisa membengkak drastis saat trafik melonjak. 
 
-**Dampak ke FoodGo:** [mekanisme kegagalan konkret]
+**Dampak ke FoodGo:**
+- Penumpukan Thread/Resource Locking: Karena modul pesanan menunggu modul pembayaran tanpa batas waktu, thread server terus tertahan menunggu respons.
+- Cascading Slowdown & Timeout: Penundaan pada satu modul merembet ke seluruh sistem, membuat aplikasi menjadi sangat lambat dan permintaan pengguna mengalami timeout.
+- Kehabisan Memori/Resource: Antrean proses yang menggantung terus menumpuk hingga akhirnya membuat server backend crash total dan harus direstart manual.  
 
-**Solusi desain awal:** [usulan solusi]
+**Solusi desain awal:**
+- Terapkan Timeout Eksplisit: Tetapkan batas waktu maksimum menunggu respons (misalnya 2-3 detik) pada pemanggilan antar modul/layanan. Jika batas waktu terlampaui, pemanggilan langsung digagalkan secara aman.
+- Komunikasi Asinkron: Gunakan sistem antrean untuk proses yang tidak membutuhkan jawaban cepat agar modul pengirim tidak perlu menunggu.
+- Pola Circuit Breaker: Hentikan sementara pemanggilan ke modul yang sedang lambat/bermasalah agar penumpukan thread tidak merambat ke modul lainnya.
 
-**Trade-off:** [apa yang dikorbankan/risiko dari solusi ini]
+**Trade-off:**
+- Kompleksitas Kode & Penanganan Error: Aplikasi harus siap menangani skenario kegagalan dengan lebih jelas seperti menampilkan pesan error yang ramah atau mekanisme pemesanan ulang.
+- Konsistensi Data: Mengalihkan proses menjadi asinkron berarti data mungkin tidak langsung update secara real-time, melainkan membutuhkan jeda beberapa saat sampai proses di latar belakang selesai.
 
 ---
 
