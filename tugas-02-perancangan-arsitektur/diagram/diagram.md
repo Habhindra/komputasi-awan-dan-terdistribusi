@@ -8,3 +8,4 @@ Client[Pelanggan] -->|HTTP Request| Gateway[API Gateway]
     PaymentSvc -->|Publish Event: OrderPaid| Broker[(Message Broker)]
     Broker -->|Subscribe| RestoSvc
     Broker -->|Subscribe| CourierSvc[Modul Kurir & Notifikasi]
+```
