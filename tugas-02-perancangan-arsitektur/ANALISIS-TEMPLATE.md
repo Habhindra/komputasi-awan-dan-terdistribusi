@@ -4,7 +4,7 @@
 
 | Nama | NIM | Kontribusi |
 |---|---|---|
-| [Rizqullah Izzul Ibad Gheaz] | [103072400033] | [] |
+| [Rizqullah Izzul Ibad Gheaz] | [103072400033] | [Soal 3 & 4] |
 | [Habhindra Dzaky Alghifary] | [103072400095] | [Soal 2] |
 | [Muhammad Zaki Oktaruna] | [103072400001] | [Soal 1] |
 
@@ -47,27 +47,45 @@ graph LR
 
 ---
 
-## Soal 3 — ditulis oleh []
+## Soal 3 Skenario End-to-End & Jenis Komunikasi — ditulis oleh [Rizqullah Izzul Ibad Gheaz]
 
-**Bukti di skenario:** Single Point Of Failure 
-Berdasarkan skenario FoodGo, ditemukan masalah saat terjadi lonjakan trafik di mana satu server menjadi sangat kewalahan karena harus menangani seluruh modul (pesanan, pembayaran, dan notifikasi kurir) yang digabung dalam satu proses monolitik yang sama
-
-**Kenapa ini keliru:** 
-Pendekatan desain ini sangat berisiko untuk sistem berskala besar karena tidak adanya isolasi sumber daya (resource isolation). Jika semua fungsi aplikasi dijalankan dalam satu proses, masalah pada satu fungsi tunggal (misalnya penggunaan memori atau CPU yang berlebih) akan berdampak langsung pada kinerja fungsi-fungsi lainnya, sehingga sistem menjadi rentan tumbang secara keseluruhan
-
-**Dampak ke FoodGo:**
-Karena semua operasional menumpuk di satu tempat, beban komputasi yang tinggi dari satu alur kerja menyebabkan server tidak mampu lagi memproses request apa pun. Hal ini memicu crash total pada server backend, yang berarti seluruh layanan (pemesanan, pembayaran, dan sistem kurir) lumpuh total secara bersamaan
-
-**Solusi desain awal:**
-Kami mengusulkan pemisahan arsitektur monolitik tersebut menjadi arsitektur berbasis Microservices atau layanan yang terdistribusi. Modul pesanan, pembayaran, dan notifikasi harus dipisah menjadi service yang berdiri sendiri. Dengan isolasi ini, jika trafik pemesanan sedang tinggi, sistem hanya perlu melakukan scaling up pada service pesanan saja menggunakan Load Balancer, tanpa membebani modul lainnya
-
-**Trade-off:**
-Pemisahan service ini mengorbankan kesederhanaan sistem dan meningkatkan kompleksitas pengelolaan data. Tim pengembang kini harus merancang mekanisme penanganan transaksi terdistribusi untuk menjaga konsistensi data. Sebagai contoh, sistem memerlukan logika tambahan seperti kompensasi transaksi atau rollback otomatis apabila modul pesanan berhasil memproses pesanan, namun pemanggilan ke modul pembayaran berujung gagal
+### Alur Skenario End-to-End:
+1. **Pelanggan $\rightarrow$ API Gateway (Sinkron | Request-Response via HTTP/HTTPS):**  
+   Pelanggan menekan tombol "Bayar/Pesan" di aplikasi. Permintaan diterima oleh **API Gateway** sebagai pintu masuk tunggal.
+2. **API Gateway $\rightarrow$ Modul Pesanan (Sinkron | Request-Response via HTTP/gRPC):**  
+   API Gateway melanjutkan permintaan ke **Modul Pesanan** untuk mencatat draf pesanan baru dan menghitung total tagihan.
+3. **Modul Pesanan $\rightarrow$ Modul Katalog Resto (Sinkron | Request-Response via RPC/REST):**  
+   Modul Pesanan melakukan query singkat ke **Modul Katalog Resto** untuk memverifikasi ketersediaan stok menu yang dipesan.
+4. **Modul Pesanan $\rightarrow$ Modul Pembayaran (Sinkron | Request-Response via RPC/gRPC):**  
+   Modul Pesanan memanggil **Modul Pembayaran** secara *blocking* untuk memproses transaksi dengan *payment gateway* pihak ketiga.
+5. **Modul Pembayaran $\rightarrow$ Message Broker (Asinkron | Event-Driven / Publish):**  
+   Setelah pembayaran berhasil diverifikasi, Modul Pembayaran menerbitkan *event* bernama `OrderPaid` ke **Message Broker**. Modul Pembayaran tidak perlu menunggu modul lain merespons (*non-blocking*).
+6. **Message Broker $\rightarrow$ Modul Katalog Resto (Asinkron | Event-Driven / Subscribe):**  
+   **Modul Katalog Resto** yang bertindak sebagai *subscriber* menerima pesan `OrderPaid` dari Message Broker, lalu otomatis memperbarui status pesanan di dasbor restoran agar dapur mulai memasak.
+7. **Message Broker $\rightarrow$ Modul Kurir & Notifikasi (Asinkron | Event-Driven / Subscribe):**  
+   Secara bersamaan (*paralel*), **Modul Kurir & Notifikasi** menerima pesan `OrderPaid` dari Message Broker untuk segera mencari/menugaskan kurir terdekat dan mengirimkan notifikasi *real-time* ke HP kurir serta pelanggan.
 
 ---
 
-## Soal 4 — ditulis oleh []
+## Soal 4 Analisis Decoupling & Trade-off — ditulis oleh [Rizqullah Izzul Ibad Gheaz]
+
+### 1. Mengapa Arsitektur Ini Mengatasi Masalah Coupling dari Tugas 1?
+Pada Tugas 1, FoodGo menggunakan arsitektur monolitik di mana semua modul berjalan dalam satu proses tunggal dan saling memanggil secara *blocking synchronous*. Hal ini menyebabkan *tight coupling*: jika satu modul lambat/bermasalah, seluruh sistem akan ikut *crash*.
+
+Kombinasi SOA dan Pub-Sub mengatasi masalah tersebut melalui dua aspek:
+* **Penghilangan *Temporal Coupling* (Mekanisme Asinkron):** Modul Pembayaran tidak perlu menunggu Modul Kurir selesai mencari driver untuk menyelesaikan proses pemesanan. Cukup dengan menembak *event* ke Message Broker, pemrosesan transaksi pengguna selesai seketika.
+* **Isolasi Kegagalan & Independensi Pendeployan (*Decoupled Deployment*):** Apabila Modul Kurir atau Modul Katalog Resto mengalami gangguan (*down*) atau sedang di-*deploy* ulang oleh tim pengembang, proses transaksi utama (Pesan & Bayar) tetap berjalan lancar. Pesan notifikasi akan tersimpan aman di antrean Message Broker dan baru diproses ketika modul bersangkutan aktif kembali.
+
+### 2. Trade-off (Risiko & Kompleksitas Baru)
+Meskipun meningkatkan skalabilitas dan ketahanan sistem, arsitektur ini membawa beberapa *trade-off* baru:
+* **Kompleksitas *Debugging* & Pelacakan Alur (*Non-Linear Flow*):** Karena komunikasi antar-modul beralih dari garis lurus (*linear*) menjadi berbasis *event*, melacak letak kesalahan (*bug*) saat pesan hilang atau gagal diproses menjadi sangat sulit. Diperlukan perkakas tambahan seperti *Distributed Tracing* (misalnya Jaeger/Zipkin).
+* **Konsistensi Data Bertahap (*Eventual Consistency*):** Data tidak lagi konsisten secara instan di seluruh sistem secara bersamaan. Terdapat jeda waktu (*latency*) beberapa milidetik hingga detik dari saat pembayaran sukses sampai kurir mendapatkan pesanan.
+* **Overhead Operasional & Infrastruktur:** Menambahkan komponen *API Gateway* dan *Message Broker* (seperti RabbitMQ/Kafka) meningkatkan biaya infrastruktur dan beban tim DevOps untuk memelihara serta memantau kesehatan *broker* tersebut.
 
 ## Kesimpulan Kelompok
 
-Secara garis besar, kegagalan sistem FoodGo disebabkan oleh kombinasi asumsi jaringan yang keliru (Latency is Zero dan The Network is Reliable) serta desain arsitektur monolitik tanpa isolasi (Single Point of Failure). Jika FoodGo memperbaiki ketiga pitfall ini, arsitektur yang disarankan adalah Arsitektur Microservices berbasis Event-Driven (Event-Driven Microservices Architecture)
+Dengan mentransformasi sistem monolitik FoodGo menjadi kombinasi arsitektur **Service-Oriented Architecture (SOA)** dan **Publish-Subscribe (Pub-Sub)**, masalah kegagalan sistem dan *tight coupling* yang dianalisis pada Tugas 1 dapat teratasi secara efektif:
+
+1. **Pemisahan Tanggung Jawab & Ketahanan Sistem:** Alur transaksi inti (Pesan & Bayar) yang bersifat kritis tetap menggunakan komunikasi sinkron via SOA/API Gateway untuk memastikan kepastian pembayaran. Sementara itu, proses sekunder (notifikasi resto & penugasan kurir) dialihkan menjadi asinkron berbasis *event* via Message Broker.
+2. **Independensi Tim & Pendeployan:** Tim Kurir dan Tim Resto kini dapat melakukan pembaruan, pemeliharaan, atau *scaling* pada layanannya masing-masing tanpa takut mengganggu ketersediaan (*availability*) modul utama maupun menyebabkan *downtime* total.
+3. **Kompromi Arsitektural (*Trade-off*):** Keberhasilan penerapan arsitektur ini menuntut tim FoodGo untuk siap mengelola kompleksitas baru, khususnya dalam hal *debugging* aliran data terdistribusi, pengelolaan infrastruktur Message Broker, serta penerapan *distributed tracing* untuk menjaga keterandalan sistem secara menyeluruh.
