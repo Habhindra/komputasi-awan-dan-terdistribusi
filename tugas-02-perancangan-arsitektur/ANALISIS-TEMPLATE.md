@@ -8,9 +8,7 @@
 | [Habhindra Dzaky Alghifary] | [103072400095] | [] |
 | [Muhammad Zaki Oktaruna] | [103072400001] | [Soal 1] |
 
-## Soal 1 — ditulis oleh [Muhammad Zaki Oktaruna]
-
-Pemilihan Gaya Arsitektur & Justifikasi
+## Soal 1 Pemilihan Gaya Arsitektur & Justifikasi — ditulis oleh [Muhammad Zaki Oktaruna]
 
 Gaya arsitektur yang dipilih adalah Kombinasi antara Service-Oriented Architecture (SOA) dan Publish-Subscribe (Pub-Sub)
 
