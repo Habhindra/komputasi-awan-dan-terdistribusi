@@ -5,7 +5,7 @@
 | Nama | NIM | Kontribusi |
 |---|---|---|
 | [Rizqullah Izzul Ibad Gheaz] | [103072400033] | [] |
-| [Habhindra Dzaky Alghifary] | [103072400095] | [] |
+| [Habhindra Dzaky Alghifary] | [103072400095] | [Soal 2] |
 | [Muhammad Zaki Oktaruna] | [103072400001] | [Soal 1] |
 
 ## Soal 1 Pemilihan Gaya Arsitektur & Justifikasi — ditulis oleh [Muhammad Zaki Oktaruna]
@@ -20,22 +20,19 @@ Kombinasi ini dipilih karena memberikan keseimbangan antara keandalan data trans
 
 ---
 
-## Soal 2 — ditulis oleh []
+## Soal 2 KOmponen dan Interaksi — ditulis oleh [Habhindra Dzaky Alghifary]
 
-**Bukti di skenario:** [The Network is Reliable]
-Tim menemukan bahwa kode mereka menulis asumsi seperti # network is always reliable, no need for retry dan tidak ada timeout sama sekali pada pemanggilan antar service (modul pesanan memanggil modul pembayaran dan menunggu tanpa batas waktu).
+**Modul Gateway:** sebagai single entry untuk menerima permintaan user,melakukan verfikasi awal dan meneruskan permintaan user ke service tanpa user ketahui
 
-**Kenapa ini keliru:** 
-Di dunia nyata jaringan tidak pernah 100% stabil.bisa jadi gangguan fisik,packet loss,latensi yang melonjak atau gangguan yang terjadi di router.jadi aplikasi akan lag saat koneksi atau jaringan terputus
+**Modul Pesanan:** sebagai mencatat data pesanan user, pembuatan pesanan baru,merubah status pesanan
 
-**Dampak ke FoodGo:** 
-Saat modul pembayaran mengalami keterlambatan atau gangguan, proses di modul pesanan akan terus menunggu secara blocking tanpa batas waktu. Akibatnya, alokasi thread di server cepat habis, sehingga pesanan baru gagal diproses, aplikasi jadi sangat lambat, dan berujung pada timeout ke seluruh pengguna
+**Modul Pembayaran:** modul pembayaran ini terhubung atau terkordinasi dengan aplikasi payment pihak ke tiga.setelah bayar dan terverifikasi maka modul ini menjadi pemicu ke proses berikutnya
 
-**Solusi desain awal:** 
-Mengonfigurasi batas waktu,ditambah dengan retry berpola exponential backoff dan circuit breaker untuk melindungi sistem dari lonjakan beban saat terjadi gangguan
+**Modul Katalog:** modul ini menyediakan data menu untuk user dan berfungsi menerima event lewat massage broker ketika ada pesanan yang sudah di bayar
 
-**Trade-off:** 
-Jika retry dilakukan secara sembarangan tanpa jeda yang jelas, server tujuan yang tadinya mau bangkit malah bisa langsung tumbang lagi gara-gara lonjakan permintaan secara bersamaan.
+**Modul Kurir/Notifikasi:** modul ini betugas untuk mencari dan menugaskan kurir terdekat untuk mengambil pesanan ke restoran dan mengirimkan notifikasi secara real time ke perangkat kurir dan user
+
+**Massage Broker:** analoginya ini bertindak sebagai papan pengunguman digital di dalam sistem.Dengan adanya Message Broker, Modul Pembayaran cukup mengtriger satu kali ke sistem (publish event), lalu modul resto dan kurir yang mendengarkan (subscribe) akan mengambil pesannya sendiri secara mandiri tanpa membuat sistem mengalami blocking atau downtime
 
 ---
 
