@@ -1,7 +1,8 @@
 ## Diagram Soal 2
 
 ```mermaid
-Client[Pelanggan] -->|HTTP Request| Gateway[API Gateway]
+graph LR
+    Client[Pelanggan] -->|HTTP Request| Gateway[API Gateway]
     Gateway -->|HTTP / RPC Sinkron| OrderSvc[Modul Pesanan]
     OrderSvc -->|RPC Sinkron| PaymentSvc[Modul Pembayaran]
     OrderSvc -->|Validasi Resto| RestoSvc[Modul Katalog Resto]
