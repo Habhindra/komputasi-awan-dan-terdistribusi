@@ -1,8 +1,8 @@
 # Jurnal Proses — Tugas 2
 
 ## [26-09-2026]
-- Opsi arsitektur yang dipertimbangkan: ...
-- Kenapa akhirnya pilih [SOA/Pub-Sub]: ...
+- Opsi arsitektur yang dipertimbangkan: Kombinasi Service-Oriented Architecture (SOA) dan Publish-Subscribe (Pub-Sub)
+- Kenapa akhirnya pilih [SOA/Pub-Sub]: dipilih karena memberikan keseimbangan antara keandalan data transaksi (lewat SOA) dan performa yang longgar serta cepat tanpa ketergantungan langsung antar-modul (lewat Pub-Sub). Jika modul kurir mengalami kendala, modul pembayaran dan pesanan tidak akan ikut down
 - Revisi diagram (versi 1 → versi 2, apa yang berubah dan kenapa): merevisi di modul (pesanan, pembayaran, kurir, dan resto) karena terhubung ke database tunggal
 
 ## Log Penggunaan AI (Level 2)
