@@ -8,29 +8,17 @@
 | [Habhindra Dzaky Alghifary] | [103072400095] | [] |
 | [Muhammad Zaki Oktaruna] | [103072400001] | [] |
 
-## Soal 1 — ditulis oleh []
+## Soal 1 — ditulis oleh [Muhammad Zaki Oktaruna]
 
-**Bukti di skenario:**
-"Aplikasi jadi sangat lambat, beberapa permintaan timeout."
-"(modul pesanan memanggil modul pembayaran dan menunggu tanpa batas waktu)."
+Pemilihan Gaya Arsitektur & Justifikasi
 
-**Kenapa ini keliru:**
-Mengasumsikan latency is zero yaitu menganggap komunikasi antar layanan berjalan secara instan tanpa penundaan waktu transpor data. Pada nyatanya, pengiriman pesan atau panggilan antar layanan membutuhkan waktu siklus. Ketika sistem menangani beban tinggi, latency jaringan akan membesar. Menunggu respons tanpa batas waktu mengabaikan fakta bahwa latency itu ada dan bisa membengkak drastis saat trafik melonjak. 
+Gaya arsitektur yang dipilih adalah Kombinasi antara Service-Oriented Architecture (SOA) dan Publish-Subscribe (Pub-Sub)
 
-**Dampak ke FoodGo:**
-- Penumpukan Thread/Resource Locking: Karena modul pesanan menunggu modul pembayaran tanpa batas waktu, thread server terus tertahan menunggu respons.
-- Cascading Slowdown & Timeout: Penundaan pada satu modul merembet ke seluruh sistem, membuat aplikasi menjadi sangat lambat dan permintaan pengguna mengalami timeout.
-- Kehabisan Memori/Resource: Antrean proses yang menggantung terus menumpuk hingga akhirnya membuat server backend crash total dan harus direstart manual.  
+SOA (Service-Oriented Architecture): Digunakan untuk interaksi inti yang bersifat transaksional dan membutuhkan kepastian langsung (synchronous request-response), contohnya komunikasi antara Modul Pesanan dan Modul Pembayaran. Pembayaran harus divalidasi saat itu juga agar status pesanan jelas
 
-**Solusi desain awal:**
-- Terapkan Timeout Eksplisit: Tetapkan batas waktu maksimum menunggu respons (misalnya 2-3 detik) pada pemanggilan antar modul/layanan. Jika batas waktu terlampaui, pemanggilan langsung digagalkan secara aman.
-- Komunikasi Asinkron: Gunakan sistem antrean untuk proses yang tidak membutuhkan jawaban cepat agar modul pengirim tidak perlu menunggu.
-- Pola Circuit Breaker: Hentikan sementara pemanggilan ke modul yang sedang lambat/bermasalah agar penumpukan thread tidak merambat ke modul lainnya.
+Publish-Subscribe (Pub-Sub): Digunakan melalui Message Broker untuk proses penyiaran notifikasi yang tidak harus memblokir proses utama, seperti memberi tahu Modul Katalog Resto dan Modul Kurir/Notifikasi setelah pesanan berhasil dibayar
 
-**Trade-off:**
-- Kompleksitas Kode & Penanganan Error: Aplikasi harus siap menangani skenario kegagalan dengan lebih jelas seperti menampilkan pesan error yang ramah atau mekanisme pemesanan ulang.
-- Konsistensi Data: Mengalihkan proses menjadi asinkron berarti data mungkin tidak langsung update secara real-time, melainkan membutuhkan jeda beberapa saat sampai proses di latar belakang selesai.
-
+Kombinasi ini dipilih karena memberikan keseimbangan antara keandalan data transaksi (lewat SOA) dan performa yang longgar serta cepat tanpa ketergantungan langsung antar-modul (lewat Pub-Sub). Jika modul kurir mengalami kendala, modul pembayaran dan pesanan tidak akan ikut down
 ---
 
 ## Soal 2 — ditulis oleh []
