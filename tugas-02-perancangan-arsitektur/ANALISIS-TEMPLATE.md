@@ -6,7 +6,7 @@
 |---|---|---|
 | [Rizqullah Izzul Ibad Gheaz] | [103072400033] | [] |
 | [Habhindra Dzaky Alghifary] | [103072400095] | [] |
-| [Muhammad Zaki Oktaruna] | [103072400001] | [] |
+| [Muhammad Zaki Oktaruna] | [103072400001] | [Soal 1] |
 
 ## Soal 1 — ditulis oleh [Muhammad Zaki Oktaruna]
 
@@ -19,6 +19,7 @@ SOA (Service-Oriented Architecture): Digunakan untuk interaksi inti yang bersifa
 Publish-Subscribe (Pub-Sub): Digunakan melalui Message Broker untuk proses penyiaran notifikasi yang tidak harus memblokir proses utama, seperti memberi tahu Modul Katalog Resto dan Modul Kurir/Notifikasi setelah pesanan berhasil dibayar
 
 Kombinasi ini dipilih karena memberikan keseimbangan antara keandalan data transaksi (lewat SOA) dan performa yang longgar serta cepat tanpa ketergantungan langsung antar-modul (lewat Pub-Sub). Jika modul kurir mengalami kendala, modul pembayaran dan pesanan tidak akan ikut down
+
 ---
 
 ## Soal 2 — ditulis oleh []
