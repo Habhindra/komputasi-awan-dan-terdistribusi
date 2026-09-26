@@ -34,6 +34,17 @@ Kombinasi ini dipilih karena memberikan keseimbangan antara keandalan data trans
 
 **Massage Broker:** analoginya ini bertindak sebagai papan pengunguman digital di dalam sistem.Dengan adanya Message Broker, Modul Pembayaran cukup mengtriger satu kali ke sistem (publish event), lalu modul resto dan kurir yang mendengarkan (subscribe) akan mengambil pesannya sendiri secara mandiri tanpa membuat sistem mengalami blocking atau downtime
 
+```mermaid
+graph LR
+    Client[Pelanggan] -->|HTTP Request| Gateway[API Gateway]
+    Gateway -->|HTTP / RPC Sinkron| OrderSvc[Modul Pesanan]
+    OrderSvc -->|RPC Sinkron| PaymentSvc[Modul Pembayaran]
+    OrderSvc -->|Validasi Resto| RestoSvc[Modul Katalog Resto]
+    PaymentSvc -->|Publish Event: OrderPaid| Broker[(Message Broker)]
+    Broker -->|Subscribe| RestoSvc
+    Broker -->|Subscribe| CourierSvc[Modul Kurir & Notifikasi]
+```
+
 ---
 
 ## Soal 3 — ditulis oleh []
