@@ -1,3 +1,5 @@
+## Diagram Soal 2
+
 ```mermaid
 graph LR
     Client[Pelanggan] -->|HTTP Request| Gateway[API Gateway]
