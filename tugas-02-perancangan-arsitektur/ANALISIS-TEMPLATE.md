@@ -1,14 +1,14 @@
-# Tugas 1 — Analisis Pitfall FoodGo
+# Tugas 2 — Perancangan Arsitektur
 
 **Kelompok:** [PaperRex]
 
 | Nama | NIM | Kontribusi |
 |---|---|---|
-| [Rizqullah Izzul Ibad Gheaz] | [103072400033] | [Latency is Zero/Pitfall 1] |
-| [Habhindra Dzaky Alghifary] | [103072400095] | [The Network is Reliable/Pitfall 2] |
-| [Muhammad Zaki Oktaruna] | [103072400001] | [Single Point Of Failure / Pitfall 3] |
+| [Rizqullah Izzul Ibad Gheaz] | [103072400033] | [] |
+| [Habhindra Dzaky Alghifary] | [103072400095] | [] |
+| [Muhammad Zaki Oktaruna] | [103072400001] | [] |
 
-## Pitfall 1: [Latency Is Zero] — ditulis oleh [Rizqullah Izzul Ibad Gheaz]
+## Soal 1 — ditulis oleh []
 
 **Bukti di skenario:**
 "Aplikasi jadi sangat lambat, beberapa permintaan timeout."
@@ -33,7 +33,7 @@ Mengasumsikan latency is zero yaitu menganggap komunikasi antar layanan berjalan
 
 ---
 
-## Pitfall 2: [The Network is Reliable] — ditulis oleh [Habhindra Dzaky Alghifary]
+## Soal 2 — ditulis oleh []
 
 **Bukti di skenario:** [The Network is Reliable]
 Tim menemukan bahwa kode mereka menulis asumsi seperti # network is always reliable, no need for retry dan tidak ada timeout sama sekali pada pemanggilan antar service (modul pesanan memanggil modul pembayaran dan menunggu tanpa batas waktu).
@@ -52,7 +52,7 @@ Jika retry dilakukan secara sembarangan tanpa jeda yang jelas, server tujuan yan
 
 ---
 
-## Pitfall 3: [Single Point Of Failure] — ditulis oleh [Muhammad Zaki Oktaruna]
+## Soal 3 — ditulis oleh []
 
 **Bukti di skenario:** Single Point Of Failure 
 Berdasarkan skenario FoodGo, ditemukan masalah saat terjadi lonjakan trafik di mana satu server menjadi sangat kewalahan karena harus menangani seluruh modul (pesanan, pembayaran, dan notifikasi kurir) yang digabung dalam satu proses monolitik yang sama
@@ -70,6 +70,8 @@ Kami mengusulkan pemisahan arsitektur monolitik tersebut menjadi arsitektur berb
 Pemisahan service ini mengorbankan kesederhanaan sistem dan meningkatkan kompleksitas pengelolaan data. Tim pengembang kini harus merancang mekanisme penanganan transaksi terdistribusi untuk menjaga konsistensi data. Sebagai contoh, sistem memerlukan logika tambahan seperti kompensasi transaksi atau rollback otomatis apabila modul pesanan berhasil memproses pesanan, namun pemanggilan ke modul pembayaran berujung gagal
 
 ---
+
+## Soal 4 — ditulis oleh []
 
 ## Kesimpulan Kelompok
 
