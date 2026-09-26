@@ -1,9 +1,9 @@
 # Jurnal Proses — Tugas 2
 
-## [Tanggal]
+## [26-09-2026]
 - Opsi arsitektur yang dipertimbangkan: ...
 - Kenapa akhirnya pilih [SOA/Pub-Sub]: ...
-- Revisi diagram (versi 1 → versi 2, apa yang berubah dan kenapa): ...
+- Revisi diagram (versi 1 → versi 2, apa yang berubah dan kenapa): merevisi di modul (pesanan, pembayaran, kurir, dan resto) karena terhubung ke database tunggal
 
 ## Log Penggunaan AI (Level 2)
 
