@@ -1,8 +1,6 @@
 """
 Tugas 3 - Simulasi Pesanan Masuk dengan Multithreading
-
-Skeleton ini sengaja belum lengkap. Isi bagian bertanda TODO.
-Jangan mengubah nama fungsi (dipakai untuk pengecekan otomatis oleh asisten).
+Versi: TANPA LOCK / SKELETON (Memicu Race Condition)
 """
 
 import threading
@@ -30,6 +28,10 @@ def process_order(order_id: int) -> None:
     # TODO 2: Tambahkan increment `processed_count` DI SINI.
     # Langkah 1: jalankan dulu tanpa lock (increment biasa: processed_count += 1)
     #            dan buktikan hasil akhirnya sering salah (< NUM_ORDERS).
+    temp = processed_count
+    time.sleep(0.0001)  # Memicu context switch
+    processed_count = temp + 1
+    
     # Langkah 2: bungkus increment dengan `with lock:` dan buktikan hasilnya
     #            selalu tepat NUM_ORDERS. Simpan bukti kedua kondisi ini
     #            di JURNAL.md / folder bukti/.
@@ -43,14 +45,27 @@ def worker(order_ids: list) -> None:
 
 
 def main() -> None:
+    global processed_count
+    processed_count = 0
     order_ids = list(range(1, NUM_ORDERS + 1))
 
     # TODO 3: Bagi `order_ids` menjadi NUM_WORKERS bagian, buat satu
     # threading.Thread per bagian yang menjalankan `worker(...)`,
     # start semua thread, lalu join semua thread sebelum lanjut.
+    chunk_size = NUM_ORDERS // NUM_WORKERS
     threads = []
+    
     # ... isi logika pembagian tugas & pembuatan thread di sini ...
 
+    for i in range(NUM_WORKERS):
+        start_idx = i * chunk_size
+        end_idx = (i + 1) * chunk_size if i < NUM_WORKERS - 1 else NUM_ORDERS
+        chunk = order_ids[start_idx:end_idx]
+
+        t = threading.Thread(target=worker, args=(chunk,))
+        threads.append(t)
+        t.start()
+        
     for t in threads:
         t.join()
 
