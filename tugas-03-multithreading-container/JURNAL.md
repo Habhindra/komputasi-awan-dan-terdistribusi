@@ -1,11 +1,11 @@
 # Jurnal Proses — Tugas 3
 
 ## Percobaan tanpa Lock
-- Hasil `processed_count` yang didapat: ![Hasil percobaan tanpa lock](src/order_simulator_skeleton.py)
+- Hasil `processed_count` yang didapat: ![Hasil percobaan tanpa lock](src/order_simulator_skeleton.png)
 - Kenapa bisa meleset (jelaskan mekanisme race condition dengan kata sendiri): karena kode yang ada di order_simulator_skeleton.py tidak menggukanan lock pada variable `processed_count` dimana beberapa thread mengakses `processed_count` secara bersamaan yang mengakibatkan proses operasi diinterupsi.
 
 ## Percobaan dengan Lock
-- Hasil `processed_count` setelah perbaikan: ![Hasil percobaan menggunakan lock](src/order_simulator_update.py)
+- Hasil `processed_count` setelah perbaikan: ![Hasil percobaan menggunakan lock](src/order_simulator_update.png)
 
 ## Kendala Docker
 - Error yang ditemui saat `docker build`/`docker run` dan cara memperbaikinya: ...
