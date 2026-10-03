@@ -11,4 +11,4 @@ COPY src/ ./src/
 
 # TODO 3: Tulis perintah default yang dijalankan saat container start,
 # yaitu menjalankan src/order_simulator.py dengan python3.
-CMD ["python", "src/order_simulator_skeleton.py"]
+CMD ["python", "src/order_simulator_update.py"]
