@@ -7,8 +7,8 @@
 ## Percobaan dengan Lock
 - Hasil `processed_count` setelah perbaikan: ![Hasil percobaan menggunakan lock](bukti/Log%20Output_Update.png)
 
-## Kendala Docker
-- Error yang ditemui saat `docker build`/`docker run` dan cara memperbaikinya: ...
+## Kendala Docker 
+- Error yang ditemui saat `docker build`/`docker run` dan cara memperbaikinya: Kendala hanya terdapat pada saat ingin build dari vscode atau github ke docker ternyata belum masuk ke folder tugas-03-multithreading-container
 
 ## Log Penggunaan AI (Level 2)
 
