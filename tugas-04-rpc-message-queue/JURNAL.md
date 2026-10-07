@@ -18,5 +18,6 @@
 > Wajib diisi sesuai kebijakan Level 2 di [`../RUBRIK-UMUM.md`](../RUBRIK-UMUM.md). Tulis "Tidak memakai AI" pada baris pertama jika memang tidak dipakai. Hanya untuk brainstorming ide/outline — bukan untuk kode/analisis/teks akhir.
 
 | Tanggal | Tool AI | Prompt yang diberikan | Ringkasan saran/ide AI | Bagaimana diolah jadi tulisan/kode sendiri |
+|---|---|---|---|---|
 |10-7-2026|GeminiAi|berikan aku panduan untuk memahami konsep tugas dan struktur  kode pika step by step |memberikan alur kerja pika mq rabbit,memberikan komponen utama pemahaman pika py dari publisher dan consumer,panduan langkah untuk pengujian|memahami point point pemahaman tentang pika dan langkah untuk pengujian|
 
