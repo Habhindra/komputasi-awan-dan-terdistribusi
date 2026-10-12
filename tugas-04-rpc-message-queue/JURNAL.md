@@ -1,7 +1,7 @@
 # Jurnal Proses — Tugas 4
 
 ## Jalur yang dipilih
-- [RPC / MQ / keduanya], alasan: ...
+- [RPC / MQ / keduanya], alasan: Alasan kelompok kami memilih untuk mengerjakan kedua jalur sekaligus (Jalur A - RPC dan Jalur B - Message Queue) adalah untuk mendapatkan pemahaman komprehensif mengenai perbandingan karakteristik komunikasi dalam sistem terdistribusi—baik pola request-response yang sinkron dan ketat pada modul pembayaran maupun pola event-driven yang asinkron dan bebas hambatan (decoupled) pada modul notifikasi kurir. Selain untuk memenuhi syarat eksplorasi demi mendapatkan nilai tambahan (bonus points), pengerjaan kedua jalur ini memungkinkan kelompok kami melakukan uji coba dan analisis risiko secara langsung di lapangan: membuktikan bagaimana RPC melakukan blocking saat menunggu respons, sekaligus membuktikan bagaimana Message Queue mampu mengamankan pesan agar tetap utuh di dalam antrean (queue) saat consumer sedang tidak aktif.
 
 ## Kendala teknis
 - code py dijalankan sebelum virtual environment (venv) diaktifkan
