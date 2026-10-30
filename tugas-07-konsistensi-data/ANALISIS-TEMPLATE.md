@@ -75,6 +75,7 @@ sequenceDiagram
 
     Note over B: Update Cache Lokal ke v2<br/>Cek Saldo: Rp150.000 >= Rp50.000 (Cukup!)
     B-->>C: 7. Transaksi Berhasil Diproses
+```
 
 ## 2. Analisis
 
