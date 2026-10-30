@@ -25,7 +25,7 @@ sequenceDiagram
     J-->>C: 2. Konfirmasi Top-up Berhasil
     
     %% Proses Replikasi Lambat/Async
-    J--)B: 3. Replikasi Asinkron (Terhambat / Delay)
+    J->>B: 3. Replikasi Asinkron (Terhambat / Delay)
     
     %% Step 2: Transaksi di Bandung sebelum replikasi selesai
     Note over C,B: Beberapa detik kemudian pelanggan memesan makanan
@@ -39,11 +39,11 @@ sequenceDiagram
 
     %% Replikasi baru selesai setelah transaksi gagal
     J-->>B: 7. Sync Replikasi Selesai (Saldo: Rp150.000)
+```
+2.Skenario Skenario Solusi Client-Centric
+Skenario ini menunjukkan perbaikan menggunakan mekanisme **Read-Your-Writes (RYW)**. Klien menyimpan *version token/timestamp* setelah melakukan pembaruan saldo di Jakarta. Saat bertransaksi di Bandung, server Bandung menyadari versi lokalnya lebih lama (*outdated*) sehingga melakukan *fetch* data terbaru langsung ke Jakarta sebelum memproses transaksi.
 
-    2.Skenario Dengan Solusi Client-Centric
-    Skenario ini menunjukkan perbaikan menggunakan mekanisme **Read-Your-Writes (RYW)**. Klien menyimpan *version token/timestamp* setelah melakukan pembaruan saldo di Jakarta. Saat bertransaksi di Bandung, server Bandung menyadari versi lokalnya lebih lama (*outdated*) sehingga melakukan *fetch* data terbaru langsung ke Jakarta sebelum memproses transaksi.
-
-    ```markdown
+```markdown
 ```mermaid
 sequenceDiagram
     autonumber
@@ -58,7 +58,7 @@ sequenceDiagram
     Note over C: Klien menyimpan Client Version = v2
 
     %% Replikasi Asinkron Terhambat
-    J--)B: 3. Replikasi Asinkron (Delay)
+    J->>B: 3. Replikasi Asinkron (Delay)
 
     %% Step 2: Transaksi di Bandung dengan RYW
     Note over C,B: Beberapa detik kemudian pelanggan memesan makanan
@@ -75,7 +75,5 @@ sequenceDiagram
 
     Note over B: Update Cache Lokal ke v2<br/>Cek Saldo: Rp150.000 >= Rp50.000 (Cukup!)
     B-->>C: 7. Transaksi Berhasil Diproses
-    
-
-
+```
 ## 2. 
