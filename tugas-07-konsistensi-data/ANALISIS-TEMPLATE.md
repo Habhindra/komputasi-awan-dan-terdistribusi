@@ -6,7 +6,7 @@
 |---|---|---|
 | [Rizqullah Izzul Ibad Gheaz] | [103072400033] | [SRC & Testing] |
 | [Habhindra Dzaky Alghifary] | [103072400095] | [Diagram Mermaid] |
-| [Muhammad Zaki Oktaruna] | [103072400001] | [ ... ] |
+| [Muhammad Zaki Oktaruna] | [103072400001] | [ Analisis ] |
 
 ## 1. Diagram
 
