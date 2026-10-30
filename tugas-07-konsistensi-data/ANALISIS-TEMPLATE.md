@@ -43,6 +43,8 @@ sequenceDiagram
 2.Skenario Skenario Solusi Client-Centric
 Skenario ini menunjukkan perbaikan menggunakan mekanisme **Read-Your-Writes (RYW)**. Klien menyimpan *version token/timestamp* setelah melakukan pembaruan saldo di Jakarta. Saat bertransaksi di Bandung, server Bandung menyadari versi lokalnya lebih lama (*outdated*) sehingga melakukan *fetch* data terbaru langsung ke Jakarta sebelum memproses transaksi.
 
+```mermaid
+
 sequenceDiagram
     autonumber
     actor C as Pelanggan (Client)
