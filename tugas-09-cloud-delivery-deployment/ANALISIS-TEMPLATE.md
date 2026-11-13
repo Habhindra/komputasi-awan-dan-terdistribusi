@@ -6,22 +6,22 @@
 |---|---|---|
 | [Rizqullah Izzul Ibad Gheaz] | [103072400033] | [Analisis] |
 | [Habhindra Dzaky Alghifary] | [103072400095] | [Testing] |
-| [Muhammad Zaki Oktaruna] | [103072400001] | [SRC] |
+| [Muhammad Zaki Oktaruna] | [103072400001] | [No 1 dan 3] |
 
-## 1. Mengapa DHT/Chord Lebih Cocok Dibanding Flat Naming atau DNS Konvensional?
-- **Dibandingkan dengan Flat Naming Sederhana (Tabel Pusat ID→IP):** Flat naming menggunakan database/tabel terpusat menjadi *single point of failure* (SPOF) dan *bottleneck*. Jika server pusat down atau mengalami lonjakan akses (misal ribuan kurir FoodGo memperbarui IP secara bersamaan), sistem akan lumpuh. Chord DHT mendistribusikan penyimpanan mapping ke seluruh node secara terdesentralisasi tanpa server pusat.
-- **Dibandingkan dengan DNS Konvensional:** DNS dioptimalkan untuk entitas yang relatif statis atau jarang berubah dengan mekanisme *caching* TTL yang panjang. Alamat IP kurir FoodGo sangat dinamis (sering berpindah jaringan seluler/Wi-Fi). DNS tidak dirancang untuk menangani pembaruan frekuensi tinggi secara *real-time* dan efisien seperti halnya struktur ring berbasis *consistent hashing* pada DHT.
-
+## 1. Rekomendasi Deployment Model: Hybrid Cloud [Zaki]
+Berdasarkan analisis ketegangan arsitektural antara tuntutan kedaulatan data mutlak dan elastisitas akses massal, model penyebaran yang paling tepat Hybrid Cloud. Arsitektur ini memisahkan beban kerja secara tegas ke dalam dua segmen terintegrasi: 
+- Segmen Private Cloud (Pusat Data Nasional): Dikelola dan dikendalikan sepenuhnya oleh pemerintah untuk menyimpan basis data inti kependudukan (NIK, biodata, dan template biometrik) serta menjalankan mesin pencocokan identitas internal
+- Segmen Public Cloud (Lapisan Antarmuka & Komputasi Publik): Berfungsi sebagai lapisan pemrosesan tanpa penyimpanan permanen (stateless compute layer) yang menampung API Gateway, penyeimbang beban (load balancer), dan antarmuka verifikasi bagi ribuan instansi mitraSegmen Public Cloud (Lapisan Antarmuka & Komputasi Publik): Berfungsi sebagai lapisan pemrosesan tanpa penyimpanan permanen (stateless compute layer) yang menampung API Gateway, penyeimbang beban (load balancer), dan antarmuka verifikasi bagi ribuan instansi mitra
 ## 2. Diagram Ring Topology
-Berdasarkan hasil simulasi (dengan ruang identifier $m=8$ atau $0-255$), berikut adalah urutan posisi node pada ring dan tanggung jawab data kurir:
 
-```mermaid
-graph TD
-    N40["node-bandung-1 (id=40)"] --> N102["node-jakarta-2 (id=102)"]
-    N102 --> N123["node-medan-1 (id=123)"]
-    N123 --> N136["node-surabaya-1 (id=136)"]
-    N136 --> N177["node-jakarta-1 (id=177)"]
-    N177 --> N40
+## 3. Analisis Risiko Spesifik & Strategi Mitigasi [Zaki]
+Penerapan Hybrid Cloud pada sistem identitas nasional menghadirkan tantangan spesifik terkait perlindungan data kependudukan dan akurasi status warga negara:
+Risiko 1: Kebocoran Template Biometrik & Rekonstruksi Identitas pada Jalur Verifikasi KYC
+- Skenario Risiko: Saat perbankan atau kepolisian melakukan verifikasi wajah maupun sidik jari secara massal melalui segmen Public Cloud, pengiriman data biometrik mentah melintasi batas jaringan (public-to-private) berisiko mengekspos data biometrik warga. Berbeda dengan kata sandi, data biometrik bersifat permanen seumur hidup dan tidak dapat diganti apabila bocor
 
-    classDef node fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
-    class N40,N102,N123,N136,N177 node;
+- Strategi Mitigasi: Menerapkan Cancelable Biometrics & Feature Extraction di Sisi Klien sebelum permintaan dikirim ke Public Cloud, melalui jalur privat terenkripsi (Dedicated Leased Line dengan Mutual TLS). Proses pencocokan (biometric matching) dilakukan sepenuhnya di dalam Private Cloud negara, sedangkan Public Cloud hanya meneruskan vektor terenkripsi dan mengembalikan skor kecocokan (match score) tanpa pernah menyimpan citra wajah atau NIK mentah
+
+Risiko 2: Inkonsistensi Status Kependudukan (Data Kematian/Perubahan NIK) Saat Lonjakan Pemilu atau PPDB
+- Skenario Risiko: Pembaruan data penduduk (seperti pencatatan kematian, perubahan domisili, atau status hak pilih oleh Dukcapil daerah) berlangsung langsung di Private Cloud. Apabila lapisan cache pada API Gateway di Public Cloud terlambat tersinkronisasi saat beban akses memuncak, identitas penduduk yang sudah tidak berlaku berpotensi lolos proses verifikasi pemilu atau seleksi sekolah
+
+- Strategi Mitigasi: Menerapkan mekanisme Event-Driven Cache Invalidation berbasis Change Data Capture (CDC) dari basis data inti di Private Cloud menuju lapisan API Gateway. Setiap perubahan status krusial warga negara secara otomatis memicu penghapusan token verifikasi lama dalam hitungan milidetik (near real-time) tanpa perlu mentransfer rincian data pribadi ke segmen publik
