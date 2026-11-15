@@ -13,7 +13,30 @@ Berdasarkan analisis ketegangan arsitektural antara tuntutan kedaulatan data mut
 - Segmen Private Cloud (Pusat Data Nasional): Dikelola dan dikendalikan sepenuhnya oleh pemerintah untuk menyimpan basis data inti kependudukan (NIK, biodata, dan template biometrik) serta menjalankan mesin pencocokan identitas internal
 - Segmen Public Cloud (Lapisan Antarmuka & Komputasi Publik): Berfungsi sebagai lapisan pemrosesan tanpa penyimpanan permanen (stateless compute layer) yang menampung API Gateway, penyeimbang beban (load balancer), dan antarmuka verifikasi bagi ribuan instansi mitraSegmen Public Cloud (Lapisan Antarmuka & Komputasi Publik): Berfungsi sebagai lapisan pemrosesan tanpa penyimpanan permanen (stateless compute layer) yang menampung API Gateway, penyeimbang beban (load balancer), dan antarmuka verifikasi bagi ribuan instansi mitra
 ## 2. Diagram Ring Topology
+1. Flow data dan keamanan
 
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Instansi as Instansi / Bank (Client)
+    participant PublicGW as  Public Cloud<br/>(API Gateway & Cache)
+    participant DirectLink as  Dedicated Link<br/>(TLS 1.3 / ZTNA)
+    participant PrivateMW as  Private Cloud<br/>(Biometric Matcher)
+    database PrivateDB as 🗄️ Database Inti<br/>(NIK & Biometrics)
+
+    Instansi->>PublicGW: 1. Request Verifikasi KYC (Tokenized Header)
+    alt Cache Hit (Hash Verifikasi Ada)
+        PublicGW-->>Instansi: 2a. Return Status (Match / Valid)
+    else Cache Miss (Membutuhkan Query Inti)
+        PublicGW->>DirectLink: 2b. Forward Encrypted Payload
+        DirectLink->>PrivateMW: 3. Authorize via ZTNA & Decrypt
+        PrivateMW->>PrivateDB: 4. Match NIK & Data Biometrik Raw
+        PrivateDB-->>PrivateMW: 5. Match Result
+        PrivateMW-->>DirectLink: 6. Encrypted Verification Response
+        DirectLink-->>PublicGW: 7. Response + Update Cache Token
+        PublicGW-->>Instansi: 8. Return Status Verified
+    end
+```
 ## 3. Analisis Risiko Spesifik & Strategi Mitigasi [Zaki]
 Penerapan Hybrid Cloud pada sistem identitas nasional menghadirkan tantangan spesifik terkait perlindungan data kependudukan dan akurasi status warga negara:
 
