@@ -63,39 +63,28 @@ graph TD
     IntFW <--> CoreMiddleware
     CoreMiddleware <--> PrimaryDB
     CoreMiddleware -. Log Activity .-> AuditLog
-
-    %% Styling Classes Applied at the End
-    classDef publicLayer fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#01579b;
-    classDef gatewayLayer fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#e65100;
-    classDef privateLayer fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#1b5e20;
-    classDef externalClient fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c;
-
-    class C1,C2,C3 externalClient;
-    class LB,WAF,PortalApp,APIGateway,Cache publicLayer;
-    class DirectConnect gatewayLayer;
-    class IntFW,CoreMiddleware,PrimaryDB,AuditLog privateLayer;
 ```
 2. Alur Verifikasi Data & Keamanan
-```   
+```mermaid
 sequenceDiagram
     autonumber
-    actor Instansi as Instansi / Bank (Client)
-    participant PublicGW as Public Cloud (API Gateway & Cache)
-    participant DirectLink as Dedicated Link (TLS 1.3 / ZTNA)
-    participant PrivateMW as Private Cloud (Biometric Matcher)
-    participant PrivateDB as Database Inti (NIK & Biometrics)
+    actor Instansi as Instansi / Bank Client
+    participant PublicGW as Public Cloud API Gateway & Cache
+    participant DirectLink as Dedicated Link TLS 1.3 / ZTNA
+    participant PrivateMW as Private Cloud Biometric Matcher
+    participant PrivateDB as Database Inti NIK & Biometrics
 
-    Instansi->>PublicGW: 1. Request Verifikasi KYC (Tokenized Header)
+    Instansi->>PublicGW: Request Verifikasi KYC Tokenized Header
     alt Cache Hit (Hash Verifikasi Ada)
-        PublicGW-->>Instansi: 2a. Return Status (Match / Valid)
+        PublicGW-->>Instansi: Return Status Match / Valid
     else Cache Miss (Membutuhkan Query Inti)
-        PublicGW->>DirectLink: 2b. Forward Encrypted Payload
-        DirectLink->>PrivateMW: 3. Authorize via ZTNA & Decrypt
-        PrivateMW->>PrivateDB: 4. Match NIK & Data Biometrik Raw
-        PrivateDB-->>PrivateMW: 5. Match Result
-        PrivateMW-->>DirectLink: 6. Encrypted Verification Response
-        DirectLink-->>PublicGW: 7. Response + Update Cache Token
-        PublicGW-->>Instansi: 8. Return Status Verified
+        PublicGW->>DirectLink: Forward Encrypted Payload
+        DirectLink->>PrivateMW: Authorize via ZTNA & Decrypt
+        PrivateMW->>PrivateDB: Match NIK & Data Biometrik Raw
+        PrivateDB-->>PrivateMW: Match Result
+        PrivateMW-->>DirectLink: Encrypted Verification Response
+        DirectLink-->>PublicGW: Response + Update Cache Token
+        PublicGW-->>Instansi: Return Status Verified
     end
 ```
 ## 3. Analisis Risiko Spesifik & Strategi Mitigasi [Zaki]
