@@ -5,7 +5,7 @@
 | Nama | NIM | Kontribusi |
 |---|---|---|
 | [Rizqullah Izzul Ibad Gheaz] | [103072400033] | [Analisis] |
-| [Habhindra Dzaky Alghifary] | [103072400095] | [Testing] |
+| [Habhindra Dzaky Alghifary] | [103072400095] | [2. Diagram ] |
 | [Muhammad Zaki Oktaruna] | [103072400001] | [No 1 dan 3] |
 
 ## 1. Rekomendasi Deployment Model: Hybrid Cloud [Zaki]
