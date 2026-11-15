@@ -19,10 +19,10 @@ Berdasarkan analisis ketegangan arsitektural antara tuntutan kedaulatan data mut
 sequenceDiagram
     autonumber
     actor Instansi as Instansi / Bank (Client)
-    participant PublicGW as  Public Cloud<br/>(API Gateway & Cache)
-    participant DirectLink as  Dedicated Link<br/>(TLS 1.3 / ZTNA)
-    participant PrivateMW as  Private Cloud<br/>(Biometric Matcher)
-    database PrivateDB as 🗄️ Database Inti<br/>(NIK & Biometrics)
+    participant PublicGW as Public Cloud (API Gateway & Cache)
+    participant DirectLink as Dedicated Link (TLS 1.3 / ZTNA)
+    participant PrivateMW as Private Cloud (Biometric Matcher)
+    participant PrivateDB as Database Inti (NIK & Biometrics)
 
     Instansi->>PublicGW: 1. Request Verifikasi KYC (Tokenized Header)
     alt Cache Hit (Hash Verifikasi Ada)
@@ -37,6 +37,7 @@ sequenceDiagram
         PublicGW-->>Instansi: 8. Return Status Verified
     end
 ```
+
 ## 3. Analisis Risiko Spesifik & Strategi Mitigasi [Zaki]
 Penerapan Hybrid Cloud pada sistem identitas nasional menghadirkan tantangan spesifik terkait perlindungan data kependudukan dan akurasi status warga negara:
 
