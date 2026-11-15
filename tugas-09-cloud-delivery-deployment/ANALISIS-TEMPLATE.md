@@ -17,38 +17,33 @@ Berdasarkan analisis ketegangan arsitektural antara tuntutan kedaulatan data mut
 
 ```mermaid
 graph TD
-    classDef publicLayer fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#01579b;
-    classDef gatewayLayer fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#e65100;
-    classDef privateLayer fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#1b5e20;
-    classDef externalClient fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c;
-
     subgraph Clients ["Public & External Access"]
-        C1["Portal Warga (Cek Status / Mandiri)"] :::externalClient
-        C2["Instansi / Bank / Polisi (Verifikasi KYC)"] :::externalClient
-        C3["Dukcapil Daerah (Petugas Operasional)"] :::externalClient
+        C1["Portal Warga (Cek Status / Mandiri)"]
+        C2["Instansi / Bank / Polisi (Verifikasi KYC)"]
+        C3["Dukcapil Daerah (Petugas Operasional)"]
     end
 
     subgraph PublicCloud ["Public Cloud Segment (Managed Government Public Cloud)"]
         direction TB
-        LB["Global Load Balancer"] :::publicLayer
-        WAF["Shield / WAF & Auto-Scaling Group"] :::publicLayer
-        PortalApp["Web Server Portal Status (SaaS / Frontend)"] :::publicLayer
-        APIGateway["API Gateway Verifikasi KYC (PaaS Level)"] :::publicLayer
-        Cache["Read-Only Hash Cache / Redis (Tokenized Data)"] :::publicLayer
+        LB["Global Load Balancer"]
+        WAF["Shield / WAF & Auto-Scaling Group"]
+        PortalApp["Web Server Portal Status (SaaS / Frontend)"]
+        APIGateway["API Gateway Verifikasi KYC (PaaS Level)"]
+        Cache["Read-Only Hash Cache / Redis (Tokenized Data)"]
     end
 
     subgraph Connectivity ["Secure Transit Link"]
-        DirectConnect["Dedicated Leased Line / Direct Connect (TLS 1.3 + ZTNA)"] :::gatewayLayer
+        DirectConnect["Dedicated Leased Line / Direct Connect (TLS 1.3 + ZTNA)"]
     end
 
     subgraph PrivateCloud ["Private Cloud Segment (Sovereign Private Cloud / Data Center Negara)"]
         direction TB
-        IntFW["Internal Firewall & ZTNA Controller"] :::privateLayer
-        CoreMiddleware["Core Middleware / Biometric Matcher Engine (IaaS / PaaS)"] :::privateLayer
+        IntFW["Internal Firewall & ZTNA Controller"]
+        CoreMiddleware["Core Middleware / Biometric Matcher Engine (IaaS / PaaS)"]
         
         subgraph DataVault ["Isolated Secure Data Vault"]
-            PrimaryDB[("Database Utama Kependudukan (NIK, Alamat, Biometrik Raw)")] :::privateLayer
-            AuditLog[("Audit & Security Logs")] :::privateLayer
+            PrimaryDB[("Database Utama Kependudukan (NIK, Alamat, Biometrik Raw)")]
+            AuditLog[("Audit & Security Logs")]
         end
     end
 
@@ -68,10 +63,21 @@ graph TD
     IntFW <--> CoreMiddleware
     CoreMiddleware <--> PrimaryDB
     CoreMiddleware -. Log Activity .-> AuditLog
+
+    %% Styling Classes Applied at the End
+    classDef publicLayer fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#01579b;
+    classDef gatewayLayer fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#e65100;
+    classDef privateLayer fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#1b5e20;
+    classDef externalClient fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c;
+
+    class C1,C2,C3 externalClient;
+    class LB,WAF,PortalApp,APIGateway,Cache publicLayer;
+    class DirectConnect gatewayLayer;
+    class IntFW,CoreMiddleware,PrimaryDB,AuditLog privateLayer;
 ```
 2. Alur Verifikasi Data & Keamanan
-   
-```sequenceDiagram
+```   
+sequenceDiagram
     autonumber
     actor Instansi as Instansi / Bank (Client)
     participant PublicGW as Public Cloud (API Gateway & Cache)
