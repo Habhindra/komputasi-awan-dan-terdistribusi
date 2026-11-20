@@ -6,9 +6,32 @@
 |---|---|---|
 | [Rizqullah Izzul Ibad Gheaz] | [103072400033] | [Risiko & Mitigasi, Alternatif Ditolak, Skenario Tandingan, & Jurnal] |
 | [Habhindra Dzaky Alghifary] | [103072400095] | [Diagram Ring Topology & Sequence Diagram Verifikasi ] |
-| [] | [] | [Deployment Model (NIST) & Service Model] |
+| [Efran Gustine Yulianto] | [103072400046] | [Deployment Model (NIST) & Service Model] |
 
-## 1. Rekomendasi Deployment Model: Hybrid Cloud []
+### 1. Rekomendasi Deployment Model: Hybrid Cloud [Efran]
+### 1.1 Alasan Memilih Hybrid Cloud Berdasarkan 5 Karakteristik Esensial NIST SP 800-145
+
+Untuk **Sistem Data Kependudukan** yang mengelola data pribadi sangat sensitif (nama, NIK, alamat, dan data biometrik mentah) di bawah mandat **UU Perlindungan Data Pribadi (UU PDP)** sekaligus melayani ribuan instansi (Dukcapil daerah, kepolisian, bank untuk verifikasi KYC) dan portal warga dengan lonjakan trafik tidak merata (seperti musim pemilu atau pendaftaran sekolah), pilihan deployment model yang paling tepat adalah **Hybrid Cloud**.
+
+Model ini memadukan **Sovereign Private Cloud** (data center negara) untuk penyimpanan inti dan pencocokan biometrik dengan **Managed Government Public Cloud** untuk lapisan akses publik, load balancing, caching hash verifikasi, dan auto-scaling, yang dihubungkan melalui jalur terenkripsi (`Dedicated Leased Line / Direct Connect` dengan **TLS 1.3 + ZTNA**). Berikut keterkaitan lima karakteristik esensial **NIST SP 800-145** terhadap kebutuhan studi kasus:
+
+- **On-Demand Self-Service:** Administrator sistem dan tim operasional dapat melakukan *provisioning* kapasitas komputasi serta penyesuaian aturan *auto-scaling* pada segmen *Public Cloud* secara mandiri dan cepat menjelang puncak trafik (pemilu atau pendaftaran sekolah) tanpa menunggu pengadaan server fisik baru, sementara perubahan kapasitas dan kebijakan akses pada *Sovereign Private Cloud* tetap dikendalikan penuh secara internal oleh otoritas negara.
+- **Broad Network Access:** Layanan dapat diakses oleh berbagai kelompok pengguna dan sistem eksternal melalui jaringan standar dan antarmuka terkelola—warga mengecek status mandiri lewat **Portal Warga (C1)**, instansi/bank/kepolisian melakukan verifikasi KYC lewat **API Gateway (C2)**, dan petugas **Dukcapil Daerah (C3)** mengakses layanan operasional—dengan perlindungan WAF/TLS di *Public Cloud* dan isolasi ketat ZTNA menuju *Private Cloud*.
+- **Resource Pooling:** Pada segmen *Public Cloud*, sumber daya komputasi, jaringan, dan *Read-Only Hash Cache (Redis)* dapat dipooling secara efisien untuk melayani banyak permintaan verifikasi berulang. Sebaliknya, **Database Utama Kependudukan (NIK, Alamat, Biometrik Raw)**, **Audit & Security Logs**, dan **Biometric Matcher Engine** ditempatkan pada **Isolated Secure Data Vault** di *Private Cloud* agar tidak berbagi sumber daya *multi-tenant* komersial yang berisiko terhadap kerahasiaan data kependudukan sesuai UU PDP.
+- **Rapid Elasticity:** Pola trafik kependudukan mengalami lonjakan tajam pada periode tertentu (pemilu, pendaftaran sekolah, layanan administratif massal). Segmen *Public Cloud* (`Global Load Balancer`, `WAF & Auto-Scaling Group`, `API Gateway`, dan `Redis Cache`) mampu melakukan *scale-out* cepat saat lonjakan terjadi untuk meredam beban (terutama saat *cache hit*) dan melakukan *scale-in* saat trafik kembali normal, sehingga *Biometric Matcher Engine* dan *Database Utama* di *Private Cloud* tidak langsung tertekan oleh seluruh trafik mentah.
+- **Measured Service:** Seluruh pemakaian sumber daya, trafik jaringan, serta volume permintaan verifikasi KYC per instansi dapat dimonitor dan diukur secara terstruktur. Di *Public Cloud*, pengukuran ini mendukung efisiensi alokasi kapasitas elastis serta pembatasan kuota/*rate limiting* per instansi; di *Private Cloud*, pencatatan metrik dan *Audit & Security Logs* memastikan setiap akses ke data inti kependudukan terlacak dan dapat dipertanggungjawabkan secara tata kelola maupun hukum.
+
+### 1.2 Rekomendasi Service Model per Komponen Arsitektur
+
+Berdasarkan diagram arsitektur yang dirancang, pembagian **Service Model (IaaS, PaaS, dan SaaS)** disesuaikan dengan tingkat sensitivitas data kependudukan dan kebutuhan kecepatan layanan tiap komponen:
+
+| Komponen pada Diagram | Segmen Cloud | Service Model | Alasan Pemilihan Service Model |
+|---|---|---|---|
+| **Database Utama Kependudukan (`PrimaryDB`: NIK, Alamat, Biometrik Raw)** & **Audit & Security Logs (`AuditLog`)** | Private Cloud (`Isolated Secure Data Vault`) | **IaaS** | Menyimpan data pribadi paling rahasia (NIK, alamat, biometrik mentah) dan jejak audit keamanan; IaaS memberi negara kendali penuh atas infrastruktur komputasi, penyimpanan terenkripsi, isolasi jaringan, dan konfigurasi keamanan internal sesuai UU PDP. |
+| **Internal Firewall & ZTNA Controller** & **Core Middleware / Biometric Matcher Engine** | Private Cloud | **IaaS** *(dengan orkestrasi/runtime terkelola internal)* | Memproses pencocokan data biometrik dan otorisasi akses inti ke database; IaaS memastikan kontrol ketat atas lingkungan eksekusi, kebijakan jaringan internal, dan keamanan data sensitif di pusat data negara. |
+| **API Gateway Verifikasi KYC** & **Read-Only Hash Cache / Redis (Tokenized Data)** | Public Cloud | **PaaS** | Menangani routing API, *rate limiting*, manajemen token verifikasi, dan *cache* hash sementara untuk mempercepat verifikasi KYC; PaaS mempercepat pengelolaan platform, *patching*, dan penskalaan komponen middleware/cache tanpa mengorbankan pemisahan data inti. |
+| **Global Load Balancer** & **Shield / WAF & Auto-Scaling Group** | Public Cloud | **PaaS** *(layanan jaringan/keamanan platform terkelola)* | Mengatur distribusi trafik, penyaringan serangan web/DDoS, dan penskalaan otomatis saat lonjakan pemilu atau pendaftaran sekolah secara terkelola agar tim fokus pada kebijakan keamanan dan kapasitas. |
+| **Web Server Portal Status (`Portal Warga` & akses antarmuka layanan `Dukcapil Daerah`)** | Public Cloud | **SaaS** *(aplikasi layanan siap pakai / terkelola penuh)* | Menyediakan antarmuka layanan status kependudukan dan operasional berbasis web yang siap pakai bagi masyarakat dan instansi daerah tanpa mengharuskan tiap instansi mengelola server aplikasi sendiri. |
 
 ## 2. Diagram Ring Topology [Habhindra]
 1. Rekomendasi Deployment Model & Arsitektur Utama
