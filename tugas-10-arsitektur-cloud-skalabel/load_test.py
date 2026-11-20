@@ -17,23 +17,31 @@ CONCURRENCY = 30
 
 hasil = Counter()
 lock = threading.Lock()
+semaphore = threading.Semaphore(CONCURRENCY)
 
 
 def kirim_request():
-    # TODO 1: lakukan GET request ke TARGET_URL, baca body response
-    # (yang berisi INSTANCE_ID dari app/app.py), lalu update `hasil`
-    # (Counter) dengan lock supaya thread-safe.
-    try:
-        with urllib.request.urlopen(TARGET_URL, timeout=5) as resp:
-            body = resp.read().decode()
-            # TODO 2: ekstrak instance_id dari `body` sesuai format response
-            # yang kalian buat di app.py, lalu:
-            # with lock:
-            #     hasil[instance_id] += 1
-            pass
-    except Exception as e:
-        with lock:
-            hasil["ERROR"] += 1
+    # TODO 1 & TODO 3: batasi thread aktif dengan semaphore, lakukan GET request
+    # ke TARGET_URL, baca body response, ekstrak instance_id, lalu update
+    # `hasil` secara thread-safe menggunakan `lock`.
+    with semaphore:
+        try:
+            with urllib.request.urlopen(TARGET_URL, timeout=5) as resp:
+                body = resp.read().decode("utf-8").strip()
+
+                # TODO 2: ekstrak instance_id dari `body` sesuai format response
+                # "Ditangani oleh instance: <INSTANCE_ID>"
+                prefix = "Ditangani oleh instance:"
+                if prefix in body:
+                    instance_id = body.split(prefix, 1)[1].strip()
+                else:
+                    instance_id = body or "TIDAK_DIKETAHUI"
+
+                with lock:
+                    hasil[instance_id] += 1
+        except Exception:
+            with lock:
+                hasil["ERROR"] += 1
 
 
 def main():
@@ -45,8 +53,6 @@ def main():
         t = threading.Thread(target=kirim_request)
         threads.append(t)
         t.start()
-        # TODO 3: batasi jumlah thread aktif bersamaan sesuai CONCURRENCY
-        # (mis. dengan semaphore, atau proses batch per CONCURRENCY thread).
 
     for t in threads:
         t.join()
