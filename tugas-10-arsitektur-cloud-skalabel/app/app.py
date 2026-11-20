@@ -19,10 +19,13 @@ class Handler(BaseHTTPRequestHandler):
 
         # TODO 2: kembalikan response berisi INSTANCE_ID, misalnya
         # body: f"Ditangani oleh instance: {INSTANCE_ID}\n"
+        body = f"Ditangani oleh instance: {INSTANCE_ID}\n".encode("utf-8")
+
         self.send_response(200)
-        self.send_header("Content-Type", "text/plain")
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
         self.end_headers()
-        self.wfile.write(b"TODO: kembalikan INSTANCE_ID di sini\n")
+        self.wfile.write(body)
 
     def log_message(self, format, *args):
         # Log singkat ke stdout supaya kelihatan di `docker compose logs`
