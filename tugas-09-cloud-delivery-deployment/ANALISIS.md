@@ -6,9 +6,10 @@
 |---|---|---|
 | [Rizqullah Izzul Ibad Gheaz] | [103072400033] | [Risiko & Mitigasi, Alternatif Ditolak, Skenario Tandingan, & Jurnal] |
 | [Habhindra Dzaky Alghifary] | [103072400095] | [Diagram Ring Topology & Sequence Diagram Verifikasi ] |
-| [Efran Gustine Yulianto] | [103072400046] | [Deployment Model (NIST) & Service Model] |
+| Efran Gustine Yulianto | 103072400046 | Deployment Model (NIST) & Service Model |
 
-### 1. Rekomendasi Deployment Model: Hybrid Cloud [Efran]
+## 1. Rekomendasi Deployment Model: Hybrid Cloud [Efran]
+
 ### 1.1 Alasan Memilih Hybrid Cloud Berdasarkan 5 Karakteristik Esensial NIST SP 800-145
 
 Untuk **Sistem Data Kependudukan** yang mengelola data pribadi sangat sensitif (nama, NIK, alamat, dan data biometrik mentah) di bawah mandat **UU Perlindungan Data Pribadi (UU PDP)** sekaligus melayani ribuan instansi (Dukcapil daerah, kepolisian, bank untuk verifikasi KYC) dan portal warga dengan lonjakan trafik tidak merata (seperti musim pemilu atau pendaftaran sekolah), pilihan deployment model yang paling tepat adalah **Hybrid Cloud**.
