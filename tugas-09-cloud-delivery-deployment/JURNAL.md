@@ -1,15 +1,15 @@
 # Jurnal Proses — Tugas 9
 
 ## Diskusi deployment model
-- Kelompok membandingkan Public Cloud murni, Private Cloud murni, dan Hybrid Cloud untuk Sistem Data Kependudukan[cite: 1, 3].
-- Public Cloud murni dinilai kurang tepat karena data kependudukan (NIK, alamat, biometrik) bersifat sangat rahasia dan diatur regulasi perlindungan data pribadi sehingga membutuhkan kendali penuh negara[cite: 1, 3].
-- Private Cloud murni dinilai kurang optimal untuk menghadapi lonjakan trafik musiman (pemilu atau pendaftaran sekolah) secara elastis[cite: 3].
-- Hybrid Cloud dipilih karena memungkinkan database utama dan pemrosesan biometrik tetap aman di Sovereign Private Cloud, sementara portal publik, API Gateway, dan penskalaan beban memanfaatkan Public Cloud yang terhubung lewat jalur terenkripsi TLS 1.3 dan ZTNA[cite: 1, 3].
+- Kelompok membandingkan Public Cloud murni, Private Cloud murni, dan Hybrid Cloud untuk Sistem Data Kependudukan.
+- Public Cloud murni dinilai kurang tepat karena data kependudukan (NIK, alamat, biometrik) bersifat sangat rahasia dan diatur regulasi perlindungan data pribadi sehingga membutuhkan kendali penuh negara.
+- Private Cloud murni dinilai kurang optimal untuk menghadapi lonjakan trafik musiman (pemilu atau pendaftaran sekolah) secara elastis.
+- Hybrid Cloud dipilih karena memungkinkan database utama dan pemrosesan biometrik tetap aman di Sovereign Private Cloud, sementara portal publik, API Gateway, dan penskalaan beban memanfaatkan Public Cloud yang terhubung lewat jalur terenkripsi TLS 1.3 dan ZTNA.
 
 ## Diskusi service model per komponen
-- Database Utama Kependudukan dan Audit & Security Logs di Private Cloud diarahkan ke IaaS agar negara memiliki kontrol penuh atas OS, penyimpanan terenkripsi, dan isolasi jaringan[cite: 1, 2].
-- Core Middleware / Biometric Matcher Engine serta API Gateway Verifikasi KYC dan Cache diarahkan ke PaaS/IaaS terkelola agar pengembangan dan penskalaan layanan lebih efisien tanpa mengorbankan keamanan[cite: 1, 2].
-- Web Server Portal Status diarahkan ke SaaS / layanan aplikasi terkelola di Public Cloud agar mudah diskalakan saat lonjakan akses warga[cite: 1, 2, 3].
+- Database Utama Kependudukan dan Audit & Security Logs di Private Cloud diarahkan ke IaaS agar negara memiliki kontrol penuh atas OS, penyimpanan terenkripsi, dan isolasi jaringan.
+- Core Middleware / Biometric Matcher Engine serta API Gateway Verifikasi KYC dan Cache diarahkan ke PaaS/IaaS terkelola agar pengembangan dan penskalaan layanan lebih efisien tanpa mengorbankan keamanan.
+- Web Server Portal Status diarahkan ke SaaS / layanan aplikasi terkelola di Public Cloud agar mudah diskalakan saat lonjakan akses warga.
 
 > Wajib diisi sesuai kebijakan Level 2 di [`../RUBRIK-UMUM.md`](../RUBRIK-UMUM.md). Tulis "Tidak memakai AI" pada baris pertama jika memang tidak dipakai. Hanya untuk brainstorming ide/outline — bukan untuk kode/analisis/teks akhir.
 
