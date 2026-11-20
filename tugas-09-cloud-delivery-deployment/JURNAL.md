@@ -17,4 +17,4 @@
 
 | Tanggal | Tool AI | Prompt yang diberikan | Ringkasan saran/ide AI | Bagaimana diolah jadi tulisan/kode sendiri |
 |---|---|---|---|---|
-| [Tanggal] | Gemini | Membantu pembagian jobdesk 3 orang dan menyusun draf analisis risiko, perbandingan alternatif ditolak, skenario tandingan, serta jurnal Tugas 9 | Memberikan pembagian tugas per anggota, ide risiko spesifik (cache Redis & jalur Direct Connect), alasan penolakan Public Cloud murni, serta contoh skenario tandingan Dukcapil daerah[cite: 1, 3] | Disesuaikan dengan diagram arsitektur kelompok PaperRex, dirapikan alur bahasanya, lalu dilengkapi identitas anggota dan detail finalisasi dokumen[cite: 1, 3] |
+| [Tanggal] | Gemini | Membantu pembagian jobdesk 3 orang dan menyusun draf analisis risiko, perbandingan alternatif ditolak, skenario tandingan, serta jurnal Tugas 9 | Memberikan pembagian tugas per anggota, ide risiko spesifik (cache Redis & jalur Direct Connect), alasan penolakan Public Cloud murni, serta contoh skenario tandingan Dukcapil daerah. | Disesuaikan dengan diagram arsitektur kelompok PaperRex, dirapikan alur bahasanya, lalu dilengkapi identitas anggota dan detail finalisasi dokumen. |
