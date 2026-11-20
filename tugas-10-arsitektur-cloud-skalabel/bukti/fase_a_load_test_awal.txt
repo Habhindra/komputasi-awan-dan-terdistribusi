@@ -1,0 +1,7 @@
+Mengirim 300 request dengan concurrency 30 ...
+
+Selesai dalam 1.16 detik
+Distribusi beban per instance:
+  app3: 100 request
+  app1: 100 request
+  app2: 100 request

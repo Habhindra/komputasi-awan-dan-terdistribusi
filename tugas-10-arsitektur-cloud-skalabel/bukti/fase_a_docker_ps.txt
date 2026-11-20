@@ -1,0 +1,5 @@
+NAME                                         IMAGE                                     COMMAND                  SERVICE   CREATED         STATUS         PORTS
+tugas-10-arsitektur-cloud-skalabel-app1-1    tugas-10-arsitektur-cloud-skalabel-app1   "python3 app.py"         app1      6 minutes ago   Up 6 minutes   
+tugas-10-arsitektur-cloud-skalabel-app2-1    tugas-10-arsitektur-cloud-skalabel-app2   "python3 app.py"         app2      6 minutes ago   Up 6 minutes   
+tugas-10-arsitektur-cloud-skalabel-app3-1    tugas-10-arsitektur-cloud-skalabel-app3   "python3 app.py"         app3      6 minutes ago   Up 6 minutes   
+tugas-10-arsitektur-cloud-skalabel-nginx-1   nginx:alpine                              "/docker-entrypoint.…"   nginx     6 minutes ago   Up 6 minutes   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp
