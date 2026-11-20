@@ -129,11 +129,20 @@ Submission **tidak** memakai Pull Request. Karena satu repo fork dipakai terus-m
    git tag tugas-03-submit
    git push origin tugas-03-submit
    ```
-3. Buka GitHub, arahkan ke folder tugas terkait **pada tag tersebut** (bukan pada `main`, supaya link tidak berubah walau kalian lanjut mengerjakan tugas berikutnya):
+3. (Opsional, disarankan) Jadikan tag tersebut sebuah **GitHub Release** — lewat halaman **Releases → Draft a new release** di GitHub (pilih tag `tugas-03-submit`), atau via CLI:
+   ```bash
+   gh release create tugas-03-submit --title "Tugas 03" --notes "Submission Tugas 03"
    ```
-   https://github.com/<akun-kelompok>/<nama-repo>/tree/tugas-03-submit/tugas-03-multithreading-container
+4. Salin link **halaman tag/release** (format `releases/tag/<nama-tag>`), **bukan** link folder/file (`tree/...` atau `blob/...`):
    ```
-4. Tempel link tersebut ke kolom submission (Online text/URL) di **assignment Moodle** untuk tugas yang bersangkutan.
+   https://github.com/<akun-kelompok>/<nama-repo>/releases/tag/tugas-03-submit
+   ```
+   Link ini tetap valid walaupun belum dibuat Release — GitHub akan menampilkan halaman tag beserta commit yang ditunjuknya.
+5. Tempel link tersebut ke kolom submission (Online text/URL) di **assignment Moodle** untuk tugas yang bersangkutan.
+
+> ❌ **Salah:** `https://github.com/<akun-kelompok>/<nama-repo>/tree/tugas-03-submit/tugas-03-multithreading-container` (link tree folder)
+> ❌ **Salah:** `https://github.com/<akun-kelompok>/<nama-repo>/tree/main/...` (link branch, isinya terus berubah)
+> ✅ **Benar:** `https://github.com/<akun-kelompok>/<nama-repo>/releases/tag/tugas-03-submit`
 
 #### Contoh Konkret
 
@@ -146,10 +155,10 @@ git push origin tugas-05-submit
 
 Link yang ditempel ke Moodle:
 ```
-https://github.com/kelompok7-foodgo/komputasi-awan/tree/tugas-05-submit/tugas-05-koordinasi-konsensus
+https://github.com/kelompok7-foodgo/komputasi-awan/releases/tag/tugas-05-submit
 ```
 
-Dosen/asisten tinggal buka link ini untuk melihat isi folder tugas **persis seperti saat kalian submit**, lengkap dengan tombol "History" di GitHub untuk menelusuri commit log sampai ke titik itu.
+Dari halaman tag/release ini dosen/asisten bisa melihat commit yang ditandai, mengunduh snapshot repo (zip/tar.gz) **persis seperti saat kalian submit**, lalu menelusuri folder `tugas-05-koordinasi-konsensus/` pada tag tersebut.
 
 #### Kalau Perlu Revisi Sebelum Deadline
 
@@ -158,7 +167,7 @@ Tag yang sudah di-push bisa dipindah ke commit terbaru (selama masih sebelum dea
 git tag -f tugas-05-submit          # pindahkan tag ke commit HEAD saat ini
 git push origin tugas-05-submit --force
 ```
-Link yang sudah ditempel di Moodle **tidak perlu diganti** — link tersebut otomatis menunjuk ke posisi tag yang baru.
+Link yang sudah ditempel di Moodle **tidak perlu diganti** — link `releases/tag/tugas-05-submit` otomatis menunjuk ke posisi tag yang baru. (Jika sudah membuat Release, Release tersebut ikut menunjuk ke tag yang dipindah; cek kembali halamannya setelah push.)
 
 Setelah deadline lewat, jangan pindahkan tag lagi — commit setelah deadline dianggap di luar submission (kecuali ada kebijakan terlambat dari dosen).
 
@@ -220,6 +229,6 @@ docker stop <container-id>
 4. Jalankan/uji hasilnya secara nyata di laptop — jangan cuma menulis kode yang tidak pernah dieksekusi.
 5. Ambil bukti (screenshot/video) di folder `bukti/`.
 6. Tulis analisis akhir di `README.md` submission (kenapa solusi ini, apa trade-off-nya, apa yang akan diperbaiki kalau ada waktu lagi).
-7. Buat git tag `tugas-XX-submit`, push, lalu kumpulkan link permalink-nya ke assignment Moodle terkait (lihat [2.5](#25-cara-submit-tugas-git-tag--link-ke-lms-moodle)).
+7. Buat git tag `tugas-XX-submit`, push, lalu kumpulkan link halaman tag/release-nya (`.../releases/tag/tugas-XX-submit`, bukan link `tree/` folder) ke assignment Moodle terkait (lihat [2.5](#25-cara-submit-tugas-git-tag--link-ke-lms-moodle)).
 
 Selamat mengerjakan!
